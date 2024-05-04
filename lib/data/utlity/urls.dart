@@ -7,7 +7,7 @@ class Urls{
   static String newTaskList = '$_baseUrl/listTaskByStatus/New';
   static String completedTaskList = '$_baseUrl/listTaskByStatus/Completed';
   static String progressTaskList = '$_baseUrl/listTaskByStatus/Progress';
-  static String closeTaskList = '$_baseUrl/listTaskByStatus/Cancle';
+  static String closeTaskList = '$_baseUrl/listTaskByStatus/Cancel';
   static String updateProfileTask = '$_baseUrl/profileUpdate';
   static String emailVerificationRequest(String email) => '$_baseUrl/RecoverVerifyEmail/$email';
   static String otpVerificationRequest(String email,String otp) => '$_baseUrl/RecoverVerifyOTP/$email/$otp';

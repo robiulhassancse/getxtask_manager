@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:task_manager/data/models/task_list_wrapper.dart';
-
+import 'package:task_manager/widgets/empty_list_widget.dart';
 import '../data/services/network_caller.dart';
 import '../data/utlity/urls.dart';
 import '../widgets/profileAppBar.dart';
 import '../widgets/snack_bar_message.dart';
-import '../widgets/task_counter_card.dart';
+
 
 class CancleTaskScreen extends StatefulWidget {
   const CancleTaskScreen({super.key});
@@ -27,83 +27,91 @@ class _CancleTaskScreenState extends State<CancleTaskScreen> {
 
   void _getDataFromApis() {
     _getAllCancleTaskList();
-    _getAllNewTaskList();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: profileAppBar,
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            Expanded(
-              child: Visibility(
-                visible: _getAllCancleTaskListInProgress == false,
-                replacement: const Center(
-                  child: CircularProgressIndicator(),
-                ),
-                child: ListView.builder(
-                    itemCount: _cancleTaskListWrapper.taskList?.length ?? 0,
-                  // itemCount: 10,
-                    itemBuilder: (context, index) {
-                      return Card(
-                        color: Colors.white,
-                        child: ListTile(
-                          title: Text(
-                              _cancleTaskListWrapper.taskList![index].title ??
-                                  ''),
-                          subtitle: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  _cancleTaskListWrapper.taskList![index].description ??
-                                      '',
-                                  style: const TextStyle(
-                                    fontSize: 10,
-                                    color: Colors.grey,
-                                  ),
-                                ),
-                                const SizedBox(
-                                  height: 10,
-                                ),
-                                 Text('Date: ${_cancleTaskListWrapper.taskList![index].createdDate ?? ''}'),
-                                const SizedBox(
-                                  height: 10,
-                                ),
-                                Row(
+      body: RefreshIndicator(
+        onRefresh: () async{
+          _getDataFromApis();
+        },
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            children: [
+              Expanded(
+                child: Visibility(
+                  visible: _cancleTaskListWrapper.taskList?.isNotEmpty ?? false,
+                  replacement: const EmptyListWidget(),
+                  child: Visibility(
+                    visible: _getAllCancleTaskListInProgress == false,
+                    replacement: const Center(
+                      child: CircularProgressIndicator(),
+                    ),
+                    child: ListView.builder(
+                        itemCount: _cancleTaskListWrapper.taskList?.length ?? 0,
+                      // itemCount: 10,
+                        itemBuilder: (context, index) {
+                          return Card(
+                            color: Colors.white,
+                            child: ListTile(
+                              title: Text(
+                                  _cancleTaskListWrapper.taskList![index].title ??
+                                      ''),
+                              subtitle: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    const Chip(
-                                      label: Text(
-                                        'Cancle',
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 16,
-                                        ),
+                                    Text(
+                                      _cancleTaskListWrapper.taskList![index].description ??
+                                          '',
+                                      style: const TextStyle(
+                                        fontSize: 10,
+                                        color: Colors.grey,
                                       ),
-                                      backgroundColor: Colors.red,
                                     ),
-                                    const Spacer(),
-                                    TextButton(
-                                      onPressed: () {},
-                                      child: const Icon(Icons.edit),
+                                    const SizedBox(
+                                      height: 10,
                                     ),
-                                    TextButton(
-                                      onPressed: () {},
-                                      child: const Icon(
-                                          Icons.delete_forever_outlined,
-                                          color: Colors.red),
+                                     Text('Date: ${_cancleTaskListWrapper.taskList![index].createdDate ?? ''}'),
+                                    const SizedBox(
+                                      height: 10,
                                     ),
-                                  ],
-                                ),
-                              ]),
-                        ),
-                      );
-                    }),
+                                    Row(
+                                      children: [
+                                        const Chip(
+                                          label: Text(
+                                            'Cancle',
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 16,
+                                            ),
+                                          ),
+                                          backgroundColor: Colors.red,
+                                        ),
+                                        const Spacer(),
+                                        TextButton(
+                                          onPressed: () {},
+                                          child: const Icon(Icons.edit),
+                                        ),
+                                        TextButton(
+                                          onPressed: () {},
+                                          child: const Icon(
+                                              Icons.delete_forever_outlined,
+                                              color: Colors.red),
+                                        ),
+                                      ],
+                                    ),
+                                  ]),
+                            ),
+                          );
+                        }),
+                  ),
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -225,24 +233,24 @@ class _CancleTaskScreenState extends State<CancleTaskScreen> {
     }
   }
 
-  Future<void> _getAllNewTaskList() async {
-    _getAllCancleTaskListInProgress = true;
-    setState(() {});
-
-    final response = await NetworkCaller.getRequest(Urls.closeTaskList);
-    if (response.isSuccess) {
-      _cancleTaskListWrapper = TaskListWrapper.fromJson(response.responseBody);
-      _getAllCancleTaskListInProgress = false;
-      setState(() {});
-    } else {
-      _getAllCancleTaskListInProgress = false;
-      setState(() {});
-      if (mounted) {
-        showSnackBarMessage(context,
-            response.errorMessage ?? 'Get new task list has been failed');
-      }
-    }
-  }
+  // Future<void> _getAllNewTaskList() async {
+  //   _getAllCancleTaskListInProgress = true;
+  //   setState(() {});
+  //
+  //   final response = await NetworkCaller.getRequest(Urls.newTaskList);
+  //   if (response.isSuccess) {
+  //     _cancleTaskListWrapper = TaskListWrapper.fromJson(response.responseBody);
+  //     _getAllCancleTaskListInProgress = false;
+  //     setState(() {});
+  //   } else {
+  //     _getAllCancleTaskListInProgress = false;
+  //     setState(() {});
+  //     if (mounted) {
+  //       showSnackBarMessage(context,
+  //           response.errorMessage ?? 'Get new task list has been failed');
+  //     }
+  //   }
+  // }
 
   Future<void> _deleteTaskById(String id) async {
     _deleteCloseTaskInProgress = true;

@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:task_manager/data/models/task_list_wrapper.dart';
-
 import '../data/services/network_caller.dart';
 import '../data/utlity/urls.dart';
 import '../widgets/empty_list_widget.dart';
 import '../widgets/profileAppBar.dart';
 import '../widgets/snack_bar_message.dart';
-import '../widgets/task_counter_card.dart';
+
 
 class CompleteTaskScreen extends StatefulWidget {
   const CompleteTaskScreen({super.key});
@@ -41,72 +40,77 @@ class _CompleteTaskScreenState extends State<CompleteTaskScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: profileAppBar,
-      body:  Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            Expanded(
-              child: Visibility(
-                visible: _getAllCompletedTaskListInProgress == false,
-                replacement: const Center(child: CircularProgressIndicator(),),
+      body:  RefreshIndicator(
+        onRefresh: ()async{
+          _getDataFromApis();
+        },
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            children: [
+              Expanded(
                 child: Visibility(
-                  visible: _completedTaskListWrapper.taskList?.isNotEmpty ?? false,
-                  replacement: const EmptyListWidget(),
-                  child: ListView.builder(
-                      itemCount: _completedTaskListWrapper.taskList?.length ?? 0,
-                      itemBuilder: (context, index) {
-                        return Card(
-                          color: Colors.white,
-                          child: ListTile(
-                            title:  Text(_completedTaskListWrapper.taskList![index].title ?? ''),
-                            subtitle: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                   Text(
-                            _completedTaskListWrapper.taskList![index].description ?? '',
-                                    style: const TextStyle(
-                                      fontSize: 10,
-                                      color: Colors.grey,
-                                    ),
-                                  ),
-
-                                  const SizedBox(
-                                    height: 10,
-                                  ),
-                                   Text('Date: ${_completedTaskListWrapper.taskList![index].title ?? ''}'),
-                                  const SizedBox(
-                                    height: 10,
-                                  ),
-                                  Row(
-                                    children: [
-                                      const Chip(label: Text('Complete', style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 16,
-                                      ),),
-                                        backgroundColor: Colors.green,
+                  visible: _getAllCompletedTaskListInProgress == false,
+                  replacement: const Center(child: CircularProgressIndicator(),),
+                  child: Visibility(
+                    visible: _completedTaskListWrapper.taskList?.isNotEmpty ?? false,
+                    replacement: const EmptyListWidget(),
+                    child: ListView.builder(
+                        itemCount: _completedTaskListWrapper.taskList?.length ?? 0,
+                        itemBuilder: (context, index) {
+                          return Card(
+                            color: Colors.white,
+                            child: ListTile(
+                              title:  Text(_completedTaskListWrapper.taskList![index].title ?? ''),
+                              subtitle: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                     Text(
+                              _completedTaskListWrapper.taskList![index].description ?? '',
+                                      style: const TextStyle(
+                                        fontSize: 10,
+                                        color: Colors.grey,
                                       ),
-                                      const Spacer(),
-                                      IconButton(
-                                        onPressed: () {
-                                          _showUpdatesStateDialog(_completedTaskListWrapper.taskList![index].sId!);
-                                        }, icon: const Icon(Icons.edit),),
-                                      IconButton(onPressed: () {
-                                        _deleteTaskById(_completedTaskListWrapper
-                                            .taskList![index].sId!);
-                                      },
-                                        icon: const Icon(Icons.delete_forever_outlined,
-                                            color: Colors.red),),
-                                    ],
-                                  ),
-                                ]
+                                    ),
+
+                                    const SizedBox(
+                                      height: 10,
+                                    ),
+                                     Text('Date: ${_completedTaskListWrapper.taskList![index].title ?? ''}'),
+                                    const SizedBox(
+                                      height: 10,
+                                    ),
+                                    Row(
+                                      children: [
+                                        const Chip(label: Text('Complete', style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 16,
+                                        ),),
+                                          backgroundColor: Colors.green,
+                                        ),
+                                        const Spacer(),
+                                        IconButton(
+                                          onPressed: () {
+                                            _showUpdatesStateDialog(_completedTaskListWrapper.taskList![index].sId!);
+                                          }, icon: const Icon(Icons.edit),),
+                                        IconButton(onPressed: () {
+                                          _deleteTaskById(_completedTaskListWrapper
+                                              .taskList![index].sId!);
+                                        },
+                                          icon: const Icon(Icons.delete_forever_outlined,
+                                              color: Colors.red),),
+                                      ],
+                                    ),
+                                  ]
+                              ),
                             ),
-                          ),
-                        );
-                      }),
+                          );
+                        }),
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

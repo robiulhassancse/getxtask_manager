@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:task_manager/data/services/network_caller.dart';
 import 'package:task_manager/data/utlity/urls.dart';
-import 'package:task_manager/screens/auth/pin_verification_screen.dart';
 import 'package:task_manager/screens/auth/sign_in_screen.dart';
 import 'package:task_manager/widgets/background_body.dart';
 import 'package:task_manager/widgets/snack_bar_message.dart';
@@ -140,11 +140,12 @@ class _SetPasswordScreenState extends State<SetPasswordScreen> {
       setState(() {});
     }
     if(response.isSuccess){
-      if(mounted) {
-        Navigator.pushAndRemoveUntil(
-            context, MaterialPageRoute(builder: (context) => const SignInScreen()), (
-            route) => false);
-      }
+      // if(mounted) {
+      //   Navigator.pushAndRemoveUntil(
+      //       context, MaterialPageRoute(builder: (context) => const SignInScreen()), (
+      //       route) => false);
+      // }
+      Get.offAll(()=> const SignInScreen());
     }else{
       if(mounted) {
         showSnackBarMessage(

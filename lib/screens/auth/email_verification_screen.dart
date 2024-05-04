@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:task_manager/data/services/network_caller.dart';
 import 'package:task_manager/data/utlity/urls.dart';
 import 'package:task_manager/screens/auth/pin_verification_screen.dart';
@@ -121,13 +122,14 @@ class _EmailVerificationState extends State<EmailVerification> {
       setState(() {});
     }
     if (response.isSuccess) {
-      if (mounted) {
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => PinVerificationScreen(
-                    email: _emailTEController.text.trim())));
-      }
+      // if (mounted) {
+      //   Navigator.push(
+      //       context,
+      //       MaterialPageRoute(
+      //           builder: (context) => PinVerificationScreen(
+      //               email: _emailTEController.text.trim())));
+      // }
+      Get.to(()=> PinVerificationScreen(email: _emailTEController.text.trim()));
     } else {
       if (mounted) {
         showSnackBarMessage(

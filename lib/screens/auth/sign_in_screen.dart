@@ -1,11 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:task_manager/controllers/auth_controller.dart';
-import 'package:task_manager/data/models/login_response.dart';
-import 'package:task_manager/data/models/response_object.dart';
-import 'package:task_manager/data/services/network_caller.dart';
-import 'package:task_manager/data/utlity/urls.dart';
-import 'package:task_manager/screens/new_task_screen.dart';
-import 'package:task_manager/screens/auth/pin_verification_screen.dart';
+import 'package:get/get.dart';
+import 'package:task_manager/controllers/sign_in_controller.dart';
 import 'package:task_manager/screens/auth/email_verification_screen.dart';
 import 'package:task_manager/screens/auth/sign_up_screen.dart';
 import 'package:task_manager/widgets/background_body.dart';
@@ -23,7 +18,9 @@ class _SignInScreenState extends State<SignInScreen> {
   final TextEditingController _emailTEController = TextEditingController();
   final TextEditingController _passwordTEController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  bool _isSignInProgress = false;
+  final bool _isSignInProgress = false;
+
+  final SignInController _signInController = Get.find<SignInController>();
 
   @override
   Widget build(BuildContext context) {
@@ -155,38 +152,23 @@ class _SignInScreenState extends State<SignInScreen> {
   }
 
   Future<void> _signIn() async {
-    _isSignInProgress = true;
-    setState(() {});
 
-    Map<String,dynamic>inpurParams={
-      "email":_emailTEController.text.trim(),
-      "password":_passwordTEController.text,
-    };
+    final result = await _signInController.signIn(_emailTEController.text.trim(), _passwordTEController.text);
 
-    final ResponseObject response= await NetworkCaller.postRequest(Urls.login, inpurParams, fromSignIn: true);
-    _isSignInProgress=false;
-    setState(() {});
-
-    if(response.isSuccess){
-      if(!mounted){
-        return;
+    if(result){
+      if(mounted) {
+        Get.offAll(()=> const MainBottomNavScren());
+        // Navigator.pushAndRemoveUntil(
+        //     context,
+        //     MaterialPageRoute(
+        //       builder: (context) =>
+        //       const MainBottomNavScren(),
+        //     ),
+        //         (route) => false);
       }
-
-      LoginResponse loginResponse = LoginResponse.fromJson(response.responseBody);
-      //save the data to local cache
-      await AuthController.saveUserData(loginResponse.userData!);
-      await AuthController.saveUserToken(loginResponse.token!);
-
-      Navigator.pushAndRemoveUntil(
-          context,
-          MaterialPageRoute(
-            builder: (context) =>
-            const MainBottomNavScren(),
-          ),
-              (route) => false);
     }else{
       if(mounted) {
-        showSnackBarMessage(context, response.errorMessage ?? 'Login failed! Try Again');
+        showSnackBarMessage(context,_signInController.errorMessage);
       }
     }
   }
@@ -196,5 +178,5 @@ class _SignInScreenState extends State<SignInScreen> {
     _emailTEController.dispose();
     _passwordTEController.dispose();
     super.dispose();
-  }
+    }
 }

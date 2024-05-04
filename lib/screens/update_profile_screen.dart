@@ -6,8 +6,6 @@ import 'package:image_picker/image_picker.dart';
 import 'package:task_manager/controllers/auth_controller.dart';
 import 'package:task_manager/data/models/user_data.dart';
 import 'package:task_manager/data/services/network_caller.dart';
-import 'package:task_manager/screens/auth/pin_verification_screen.dart';
-import 'package:task_manager/screens/auth/email_verification_screen.dart';
 import 'package:task_manager/widgets/background_body.dart';
 import 'package:task_manager/widgets/main_bottom_nav_screen.dart';
 import 'package:task_manager/widgets/profileAppBar.dart';

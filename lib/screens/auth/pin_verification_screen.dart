@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:task_manager/data/services/network_caller.dart';
 import 'package:task_manager/screens/auth/set_password_screen.dart';
@@ -119,11 +120,12 @@ class _PinVerificationScreenState extends State<PinVerificationScreen> {
                       ),
                       TextButton(
                         onPressed: () {
-                          Navigator.pushAndRemoveUntil(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => const SignInScreen()),
-                              (route) => false);
+                          // Navigator.pushAndRemoveUntil(
+                          //     context,
+                          //     MaterialPageRoute(
+                          //         builder: (context) => const SignInScreen()),
+                          //     (route) => false);
+                          Get.offAll(()=> SignInScreen());
                         },
                         child: const Text(
                           "Sign in",
@@ -152,15 +154,16 @@ class _PinVerificationScreenState extends State<PinVerificationScreen> {
       setState(() {});
     }
     if (response.isSuccess) {
-      if (mounted) {
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => SetPasswordScreen(
-                      email: widget.email,
-                      otp: _otpTEController.text,
-                    )));
-      }
+      // if (mounted) {
+      //   Navigator.push(
+      //       context,
+      //       MaterialPageRoute(
+      //           builder: (context) => SetPasswordScreen(
+      //                 email: widget.email,
+      //                 otp: _otpTEController.text,
+      //               )));
+      // }
+      Get.to(()=> SetPasswordScreen(email: widget.email, otp: _otpTEController.text));
     } else {
       if (mounted) {
         showSnackBarMessage(

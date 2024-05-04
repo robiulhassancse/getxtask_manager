@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:task_manager/data/models/response_object.dart';
 import 'package:task_manager/data/services/network_caller.dart';
 import 'package:task_manager/data/utlity/urls.dart';
@@ -35,7 +36,9 @@ class _AddNewTaskScreenState extends State<AddNewTaskScreen> {
         if(didPop) {
           return;
         }
-          Navigator.pop(context, _shouldRefreshNewTaskList);
+          // Navigator.pop(context, _shouldRefreshNewTaskList);
+        Get.back(result: _shouldRefreshNewTaskList);
+
       },
       child: Scaffold(
         appBar: profileAppBar,
